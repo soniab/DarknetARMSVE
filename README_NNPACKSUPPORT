@@ -1,0 +1,25 @@
+Download NNPACK and go in the repository:
+
+1) mkdir build
+2) cd build
+3) export CC=~/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-gcc
+4) export CXX=~/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-g++
+5) cmake ..
+6) cd .. (out of build)
+7) cp -r deps_sve deps (replce the deps to deps_sve as some changes are in the Pthreadpool and cpuinfo CMakefile)
+8) cd build  (go inside build)
+9) make (this will create a static library)
+
+
+cd darknet
+change the path of libNNPACK in the Makefile
+Change the Path for the compiler in the Makefile
+make
+
+
+
+Executable:
+Has been tested on SVE environment for 512, 1024, 2048 bit vector lengths. 
+
+
+
