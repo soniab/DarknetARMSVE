@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <arm_sve.h>
 char *get_activation_string(ACTIVATION a)
 {
     switch(a){
@@ -97,14 +97,58 @@ float activate(float x, ACTIVATION a)
     return 0;
 }
 
+
 void activate_array(float *x, const int n, const ACTIVATION a)
+{
+//#pragma omp parallel  //private(i,j,k)
+ //       {
+ 
+ int i;
+    long gvl;
+    float beta=0.1,ALPHA=0;
+   switch(a){
+        case LEAKY:
+                #pragma omp parallel for   
+               for(i = 0; i < n;i++ )
+               {        
+                        float tmp = 0.1;
+                        x[i] = (x[i]>0) ? x[i] : (tmp*x[i]);
+                }
+                break;
+        case LINEAR:
+                #pragma omp parallel for  
+               for(i = 0; i < n; i+= svcntw()){
+              // for(i = 0; i < n; i++){
+                svbool_t pg = svwhilelt_b32(i, n);
+                        
+                svfloat32_t x_vec = svld1(pg, &x[i]);   //load C 
+                svst1(pg, &x[i], x_vec);
+       // x[i] = x[i];
+                }
+                break;
+         default:
+               for(i = 0; i < n; ++i){
+                   x[i] = activate(x[i], a);
+                }
+                break;
+      }
+//}
+   /*int i;
+   #pragma omp parallel for 
+    for(i = 0; i < n; ++i){
+        x[i] = activate(x[i], a);
+    }*/
+}
+
+
+/*void activate_array(float *x, const int n, const ACTIVATION a)
 {
     int i;
     for(i = 0; i < n; ++i){
         x[i] = activate(x[i], a);
     }
 }
-
+*/
 float gradient(float x, ACTIVATION a)
 {
     switch(a){

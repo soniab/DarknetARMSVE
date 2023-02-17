@@ -1,5 +1,5 @@
 #include "blas.h"
-
+#include <arm_sve.h>
 #include <math.h>
 #include <assert.h>
 #include <float.h>
@@ -67,6 +67,10 @@ void weighted_delta_cpu(float *a, float *b, float *s, float *da, float *db, floa
 
 void shortcut_cpu(int batch, int w1, int h1, int c1, float *add, int w2, int h2, int c2, float s1, float s2, float *out)
 {
+ #pragma omp parallel  //private(i,j,k)
+        {
+
+
     int stride = w1/w2;
     int sample = w2/w1;
     assert(stride == h1/h2);
@@ -78,17 +82,26 @@ void shortcut_cpu(int batch, int w1, int h1, int c1, float *add, int w2, int h2,
     int minc = (c1 < c2) ? c1 : c2;
 
     int i,j,k,b;
-    for(b = 0; b < batch; ++b){
-        for(k = 0; k < minc; ++k){
-            for(j = 0; j < minh; ++j){
-                for(i = 0; i < minw; ++i){
-                    int out_index = i*sample + w2*(j*sample + h2*(k + c2*b));
-                    int add_index = i*stride + w1*(j*stride + h1*(k + c1*b));
-                    out[out_index] = s1*out[out_index] + s2*add[add_index];
+     #pragma omp for collapse(3) 
+    for(b = 0; b < batch; ++b)
+    {
+        for(k = 0; k < minc; ++k)
+	{
+		//int tmp3 = h2*(k + c2*b);
+		//int tmp4 = h1*(k + c1*b);
+            	for(j = 0; j < minh; ++j)
+		{
+        	//	int tmp1 =  w2*(j*sample +tmp3);
+		//	int tmp2 = w1*(j*stride + tmp4);
+	        	for(i = 0; i < minw; ++i){
+                    		int out_index = i*sample + w2*(j*sample + h2*(k + c2*b));
+                    		int add_index = i*stride + w1*(j*stride + h1*(k + c1*b));
+                    		out[out_index] = s1*out[out_index] + s2*add[add_index];
                 }
             }
         }
     }
+}
 }
 
 void mean_cpu(float *x, int batch, int filters, int spatial, float *mean)
@@ -144,7 +157,7 @@ void l2normalize_cpu(float *x, float *dx, int batch, int filters, int spatial)
 }
 
 
-void normalize_cpu(float *x, float *mean, float *variance, int batch, int filters, int spatial)
+/*void normalize_cpu(float *x, float *mean, float *variance, int batch, int filters, int spatial)
 {
     int b, f, i;
     for(b = 0; b < batch; ++b){
@@ -155,6 +168,35 @@ void normalize_cpu(float *x, float *mean, float *variance, int batch, int filter
             }
         }
     }
+}
+*/
+void normalize_cpu(float *x, float *mean, float *variance, int batch, int filters, int spatial)
+{
+   #pragma omp parallel  //private(i,j,k)
+        {
+
+    int b, f, i;
+     #pragma omp for  collapse(3) 
+     //#pragma omp for  
+    for(b = 0; b < batch; ++b){
+        for(f = 0; f < filters; ++f){
+          //  for(i = 0; i < spatial; ++i){
+            for(i = 0; i < spatial; i+= svcntw()){
+                float tmp1 = mean[f];
+                int index = b*filters*spatial + f*spatial;
+                float tmp = (sqrt(variance[f]) + .000001f);
+                svbool_t pg = svwhilelt_b32(i, spatial);  //condition
+
+                svfloat32_t x_vec = svld1(pg, &x[index+i]);   //load C 
+                svfloat32_t x_vec1 = svsub_m(pg, x_vec,tmp1);  // addition vector and vector
+                svfloat32_t x_vec2 = svdiv_m(pg, x_vec1,tmp);  // addition vector and vector
+                //float tmp2 = (x[index+i] - tmp1)/tmp;
+               // x[index+i] = tmp2;
+                svst1(pg, &x[index+i], x_vec2);   //store
+            }
+        }
+    }
+  }
 }
 
 void const_cpu(int N, float ALPHA, float *X, int INCX)
@@ -190,6 +232,7 @@ void scal_cpu(int N, float ALPHA, float *X, int INCX)
 void fill_cpu(int N, float ALPHA, float *X, int INCX)
 {
     int i;
+    #pragma omp parallel for   
     for(i = 0; i < N; ++i) X[i*INCX] = ALPHA;
 }
 
@@ -226,6 +269,7 @@ void inter_cpu(int NX, float *X, int NY, float *Y, int B, float *OUT)
 void copy_cpu(int N, float *X, int INCX, float *Y, int INCY)
 {
     int i;
+    #pragma omp parallel for   
     for(i = 0; i < N; ++i) Y[i*INCY] = X[i*INCX];
 }
 

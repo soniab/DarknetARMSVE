@@ -4,7 +4,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <pthread.h>
-
+#define NNPACK 1
+#ifdef NNPACK
+#include <nnpack.h>
+#endif
 #ifdef GPU
     #define BLOCK 512
 
@@ -30,6 +33,19 @@ typedef struct{
 } metadata;
 
 metadata get_metadata(char *file);
+
+
+#ifdef NNPACK
+struct nnpack_data
+{
+  int nnpack_initialized;
+  size_t nnpack_workspace_size;
+  void *nnpack_workspace;
+  size_t nnpack_computed_kernel_size;
+  void *nnpack_computed_kernel;
+} typedef nnpack_data;
+#endif
+
 
 typedef struct{
     int *leaf;
@@ -330,7 +346,9 @@ struct layer{
     tree *softmax_tree;
 
     size_t workspace_size;
-
+	#ifdef NNPACK
+    struct nnpack_data *nnpack_state;
+#endif
 #ifdef GPU
     int *indexes_gpu;
 
@@ -492,7 +510,9 @@ typedef struct network{
     float *delta_gpu;
     float *output_gpu;
 #endif
-
+#ifdef NNPACK
+	pthreadpool_t threadpool;
+#endif
 } network;
 
 typedef struct {
