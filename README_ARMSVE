@@ -7,6 +7,7 @@ To run with im2col+gemm implementations:
 
     Compilation:
         im2col+gemm implementation is a part of the darknet repository and does not require any additional linking. 
+        Enter the repository by using `cd DarknetARMSVE`
         To compile the im2col+gemm implementation, use Makefile_gemm. 
         NNPACK is already set as 0 in the Makefile_gemm. 
         For compilation use the 'make -f Makefile_gemm' command. 
