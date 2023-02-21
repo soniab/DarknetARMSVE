@@ -4,7 +4,10 @@ Note: Please note that it is necessary to first build NNPACK for SVE architectur
 
 
 After building the NNPACK and create the static library, please follow the below instructions:
-Step 1: Enter in the repository by using `cd DarknetARMSVE`
+Enter in the repository by using `cd DarknetARMSVE`
+Step 1: Please enable the macro by uncommenting
+#define NNPACK 1
+from include/darknet.h
 Step 2: Please use MAkefile_NNPACK from makefiles to compile the software with winograd implementation. 
 Step 3: Please change the path of the compiler and static NNPACK libraries if necessary. 
 Step 4: hen compile the darknet using `make` command 
