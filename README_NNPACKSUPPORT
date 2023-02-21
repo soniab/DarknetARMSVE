@@ -18,4 +18,8 @@ Executable:
 The generated binary has been tested on A64FX, ARMIE and GEM5 simulator for SVE environment with 512, 1024, 2048 bit vector lengths. 
 
 
-
+Files which have SVE implementations:
+gemm.c
+activations.c
+convolutional_layer.c
+blas.c
