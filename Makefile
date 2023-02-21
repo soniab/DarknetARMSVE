@@ -106,7 +106,7 @@ all: obj backup results $(ALIB) $(EXEC)
 
 
 $(EXEC): $(EXECOBJ) $(ALIB)
-	$(CC)  $(CFLAGS) $(COMMON)  $^ ../NNPACK/build1/libnnpack.a -o $@  $(LDFLAGS) $(ALIB)  
+	$(CC)  $(CFLAGS) $(COMMON)  $^ ../NNPACK/build/libnnpack.a -o $@  $(LDFLAGS) $(ALIB)  
 #	$(CC)  $(CFLAGS) $(COMMON)  $^ ~/NNPACK-SVE/build1/libnnpack.a -o $@  $(LDFLAGS) $(ALIB)  
 #	$(CC)  $(CFLAGS) $(COMMON)  $^  -o $@  $(LDFLAGS) $(ALIB)  
 
