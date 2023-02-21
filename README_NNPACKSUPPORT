@@ -1,15 +1,18 @@
 Download NNPACK and build. Then download the DarknetARMSVE repository.
 
+Note: Please note that it is necessary to first build NNPACK for SVE architecture and create the static library. 
 
-cd DarknetARMSVE
-change the path of libNNPACK in the Makefile
-Change the Path for the compiler in the Makefile
-make
 
+After building the NNPACK and create the static library, please follow the below instructions:
+Step 1: Enter in the repository by using `cd DarknetARMSVE`
+Step 2: Please use MAkefile_NNPACK from makefiles to compile the software with winograd implementation. 
+Step 3: Please change the path of the compiler and static NNPACK libraries if necessary. 
+Step 4: hen compile the darknet using `make` command 
+Step 5: This will create the static binary 
 
 
 Executable:
-Has been tested on SVE environment for 512, 1024, 2048 bit vector lengths. 
+The generated binary has been tested on A64FX, ARMIE and GEM5 simulator for SVE environment with 512, 1024, 2048 bit vector lengths. 
 
 
 
