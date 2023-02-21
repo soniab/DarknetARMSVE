@@ -1,0 +1,37 @@
+Comvolutional layer can be implemented with different algorithms like im2col+gemm, winograd, fft, direct. We are providing the implementations for m2col+gemm and winograd for convolutional layer. 
+
+ 
+To run with im2col+gemm implementations:
+
+im2col+gemm implementation is a part of darknet repository and does not require any additional linking. 
+For this we need to disble the macro of NNPACK from include/darknet.h - comment out #define NNPACK 1
+To compile the im2col+gemm implementation, use Makefile_gemm from makefiles folder. 
+cp ./makefiles/Makefile_gemm .
+Rename Makefile_gemm to Makefile
+then use 'make' command to compile the codes. 
+
+To run the command on A64fx please use
+'./binary detect cfg/yolov3.cfg yolov3.weights data/dog.jpg'
+
+
+
+To run with Winograd implementation:
+First make sure to download NNPACK and build. Then download the DarknetARMSVE repository. Please follow the instructions from README_ARMSVE inside the NNPACK repository to build NNPACK for ARMSVE architecture. 
+
+Note: Please note that it is necessary to first build NNPACK for SVE architecture and create the static library. 
+
+After building the NNPACK and create the static library, please follow the below instructions:
+Enter in the repository by using `cd DarknetARMSVE`
+Step 1: Please enable the macro by uncommenting
+#define NNPACK 1
+from include/darknet.h
+Step 2: Please use MAkefile_NNPACK from makefiles to compile the software with winograd implementation. Please use 'cp ./makefiles/MAkefile_NNPACK .'  and then Rename Makefile_NNPACK to Makefile using 'mv Makefile_NNPACK Makefile'
+Step 3: Please change the path of the compiler and static NNPACK libraries in the Makefile if necessary. 
+Step 4: To compile the darknet using `make` command 
+Step 5: This will create the static binary for darknet with NNPACK
+
+To run the binary on A64fx please use - './binary detect cfg/yolov3.cfg yolov3.weights data/dog.jpg'
+
+
+Execution:
+The generated binary has been tested on A64FX, ARMIE and GEM5 simulator for SVE environment with 512, 1024, 2048 bit vector lengths. 

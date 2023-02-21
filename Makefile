@@ -3,7 +3,7 @@ CUDNN=0
 OPENCV=0
 OPENMP=1
 DEBUG=0
-#NNPACK=1
+NNPACK=1
 ARCH= -gencode arch=compute_30,code=sm_30 \
       -gencode arch=compute_35,code=sm_35 \
       -gencode arch=compute_50,code=[sm_50,compute_50] \
@@ -16,23 +16,13 @@ ARCH= -gencode arch=compute_30,code=sm_30 \
 VPATH=./src/:./examples
 SLIB=libdarknet.so
 ALIB=libdarknet.a
-EXEC=armdarknetimplicit4OpenMPdebug
-#EXEC=armdarknetimplicit48OpenMPyolo1 #final
-#EXEC=armdarknetimplicit48OpenMPalexnet
+EXEC=armdarknetNNPACKcheck1
 #EXEC=armdarknetNNPACK-SVE164096128oldbuild
 #EXEC=armdarknet-SVEmatrixsize
 #EXEC=armdarknetNNPACK-SVEstartup
 OBJDIR=./obj/
 
 CC=~/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-gcc
-#CC=gcc
-#CC=/root/llvm_riscv64_native/bin/clang
-#CC=../llvm-EPI-0.7-development-toolchain-cross/bin/clang
-#CC=~/local/riscvv08/gnu/bin/riscv64-unknown-linux-gnu-gcc
-#CC=armclang
-#CPP=g++
-#CPP=~/local/riscvv08/gnu/bin/riscv64-unknown-linux-gnu-gcc
-#CPP=../llvm-EPI-0.7-development-toolchain-cross/bin/clang
 CPP=~/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-gcc
 #NVCC=nvcc 
 AR=ar
@@ -48,8 +38,7 @@ COMMON= -Iinclude/ -Isrc/
 #CFLAGS=  -march=armv8-a+sve  -armpl=sve -mcpu=a64fx -O3  -static -fopenmp   -Wall -fsave-optimization-record -Rpass=loop-vectorize  -Werror-implicit-function-declaration -Wno-unused-result -Wno-unknown-pragmas -Wfatal-errors -fPIC -L~/arm-performance-libraries_21.0_RHEL-7_gcc-10.2/arm-library/armpl_21.0_gcc-10.2/lib -I ~/arm-performance-libraries_21.0_RHEL-7_gcc-10.2/arm-library/armpl_21.0_gcc-10.2/include  #-larmpl -larmflang -lm
 
 ###onednn
-#CFLAGS= -march=armv8-a+sve -mcpu=generic  -O3    -static -Wall  -fsave-optimization-record   -Werror-implicit-function-declaration -Wno-unused-result -Wno-unknown-pragmas -Wfatal-errors -fPIC -I /proj/snic2021-5-2/users/x_songu/arm-compiler-for-linux_22.0.1_RHEL-7/armpl-install/armpl-22.0.1_AArch64_RHEL-7_gcc_aarch64-linux/include   
-CFLAGS= -march=armv8.2-a+sve   -O3 -fopenmp   -static -Wall  -fsave-optimization-record   -Werror-implicit-function-declaration -Wno-unused-result -Wno-unknown-pragmas -Wfatal-errors -fPIC -I /proj/snic2021-5-2/users/x_songu/arm-compiler-for-linux_22.0.1_RHEL-7/armpl-install/armpl-22.0.1_AArch64_RHEL-7_gcc_aarch64-linux/include   
+CFLAGS= -march=armv8-a+sve -mcpu=generic  -O3    -static -Wall  -fsave-optimization-record   -Werror-implicit-function-declaration -Wno-unused-result -Wno-unknown-pragmas -Wfatal-errors -fPIC  -I ../NNPACK/include/ -I ../NNPACK/deps/pthreadpool/include/ 
 #CFLAGS=  -march=armv8-a+sve -O2   -fopenmp  -static -Wall -fsave-optimization-record -Rpass=loop-vectorize -Wl -Bdynamic  -Werror-implicit-function-declaration -Wno-unused-result -Wno-unknown-pragmas -Wfatal-errors -fPIC #-larmpl -larmflang -lim
 #CFLAGS=  -march=armv8-a+sve  -armpl=sve -O2 -static -fopenmp   -Wall -fsave-optimization-record -Rpass=loop-vectorize  -Werror-implicit-function-declaration -Wno-unused-result -Wno-unknown-pragmas -Wfatal-errors -fPIC -L~/arm-performance-libraries_21.0_RHEL-7_gcc-10.2/arm-library/armpl_21.0_gcc-10.2/lib -I ~/arm-performance-libraries_21.0_RHEL-7_gcc-10.2/arm-library/armpl_21.0_gcc-10.2/include  #-larmpl -larmflang -lm
 #CFLAGS=  -march=armv8-a+sve  -O2  -static -fopenmp -S -Wall -fsave-optimization-record -Rpass=unroll -Werror-implicit-function-declaration -Wno-unused-result -Wno-unknown-pragmas -Wfatal-errors -fPIC 
@@ -101,7 +90,7 @@ endif
 
 
 #LDFLAGS+= ~/NNPACK-SVE/build1/libnnpack.a ~/NNPACK-SVE/build1/deps/pthreadpool/libpthreadpool.a ~/NNPACK-SVE/build1/deps/cpuinfo/libcpuinfo_internals.a ~/NNPACK-SVE/build1/deps/cpuinfo/libcpuinfo.a
-#LDFLAGS+= /proj/snic2021-5-2/users/x_songu/build1/libnnpack.a /proj/snic2021-5-2/users/x_songu/build1/deps/pthreadpool/libpthreadpool.a /proj/snic2021-5-2/users/x_songu/build1/deps/cpuinfo/libcpuinfo_internals.a /proj/snic2021-5-2/users/x_songu/build1/deps/cpuinfo/libcpuinfo.a
+LDFLAGS+= ../NNPACK/build/libnnpack.a ../NNPACK/build/deps/pthreadpool/libpthreadpool.a ../NNPACK/build/deps/cpuinfo/libcpuinfo_internals.a ../NNPACK/build/deps/cpuinfo/libcpuinfo.a
 #LDFLAGS+= /proj/snic2021-5-2/users/x_songu/build1/libnnpack.a /proj/snic2021-5-2/users/x_songu/build1/deps/pthreadpool/libpthreadpool.a /proj/snic2021-5-2/users/x_songu/build1/deps/cpuinfo/libcpuinfo_internals.a /proj/snic2021-5-2/users/x_songu/build1/deps/cpuinfo/libcpuinfo.a
 #LDFLAGS+= ~/NNPACK-SVE/build1/libnnpack.a ~/NNPACK-SVE/build1/deps/pthreadpool/libpthreadpool.a /proj/snic2021-5-2/users/x_songu/build1/deps/cpuinfo/libcpuinfo_internals.a /proj/snic2021-5-2/users/x_songu/build1/deps/cpuinfo/libcpuinfo.a
 
@@ -117,9 +106,9 @@ all: obj backup results $(ALIB) $(EXEC)
 
 
 $(EXEC): $(EXECOBJ) $(ALIB)
-#	$(CC)  $(CFLAGS) $(COMMON)  $^ /proj/snic2021-5-2/users/x_songu/build1/libnnpack.a -o $@  $(LDFLAGS) $(ALIB)  
+	$(CC)  $(CFLAGS) $(COMMON)  $^ ../NNPACK/build/libnnpack.a -o $@  $(LDFLAGS) $(ALIB)  
 #	$(CC)  $(CFLAGS) $(COMMON)  $^ ~/NNPACK-SVE/build1/libnnpack.a -o $@  $(LDFLAGS) $(ALIB)  
-	$(CC)  $(CFLAGS) $(COMMON)  $^  -o $@  $(LDFLAGS) $(ALIB)  
+#	$(CC)  $(CFLAGS) $(COMMON)  $^  -o $@  $(LDFLAGS) $(ALIB)  
 
 $(ALIB): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $^
