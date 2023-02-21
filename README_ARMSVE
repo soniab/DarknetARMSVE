@@ -25,7 +25,7 @@ Enter the repository by using `cd DarknetARMSVE`
 Step 1: Please enable the macro by uncommenting
 #define NNPACK 1
 from include/darknet.h
-Step 2: Please use MAkefile_NNPACK from makefiles to compile the software with Winograd implementation. Please use 'cp ./makefiles/MAkefile_NNPACK .'  and then Rename Makefile_NNPACK to Makefile using 'mv Makefile_NNPACK Makefile'
+Step 2: Please use Makefile_NNPACK from makefiles to compile the software with Winograd implementation. Please use 'cp ./makefiles/MAkefile_NNPACK .'  and then Rename Makefile_NNPACK to Makefile using 'mv Makefile_NNPACK Makefile'
 Step 3: Please change the path of the compiler and static NNPACK libraries in the Makefile if necessary. 
 Step 4: To compile the darknet using the `make` command 
 Step 5: This will create the static binary for the darknet with NNPACK
