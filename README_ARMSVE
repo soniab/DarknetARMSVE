@@ -3,11 +3,11 @@ The convolutional layer can be implemented with different algorithms like im2col
  
 To run with im2col+gemm implementations:
     Download: 
-        git clone https://github.com/soniab/DarknetARMSVE.git
+        git clone https://github.com/chalmers-hart/Darknet-ARM-SVE.git
 
     Compilation:
         im2col+gemm implementation is a part of the darknet repository and does not require any additional linking. 
-        Enter the repository by using `cd DarknetARMSVE`
+        Enter the repository by using `cd Darknet-ARM-SVE`
         To compile the im2col+gemm implementation, use Makefile_gemm. 
         NNPACK is already set as 0 in the Makefile_gemm. 
         For compilation use the 'make -f Makefile_gemm' command. 
@@ -19,13 +19,13 @@ To run with im2col+gemm implementations:
 
 To run with Winograd implementation:
     Download:
-        git clone https://github.com/soniab/DarknetARMSVE.git
+        git clone https://github.com/chalmers-hart/Darknet-ARM-SVE.git
 
     Compilation:
-        Before compiling darknet repository, make sure to download NNPACK and build. Follow thw instructions from README_ARMSVE from "https://github.com/soniab/NNPACK.git" repository to download and compile the NNPACK for ARMSVE. Note: Please note that it is necessary to first build NNPACK for ARMSVE architecture because it is important to link 'NNPACK/build/libnnpack.a' to call the kernels from NNPACK repository for the Winograd implementation.  
+        Before compiling darknet repository, make sure to download NNPACK and build. Follow thw instructions from README_ARMSVE from "https://github.com/chalmers-hart/NNPACK.git" repository to download and compile the NNPACK for ARMSVE. Note: Please note that it is necessary to first build NNPACK for ARMSVE architecture because it is important to link 'NNPACK/build/libnnpack.a' to call the kernels from NNPACK repository for the Winograd implementation.  
     
         Compilation of Daknet with NNPACK:
-            Enter the repository by using `cd DarknetARMSVE`
+            Enter the repository by using `cd Darknet-ARM-SVE`
             To compile the Winograd implementation, use Makefile_NNPACK. 
             NNPACK is already set as 1 in the Makefile_NNPACK. 
             For compilation use the 'make -f Makefile_NNPACK' command.  
